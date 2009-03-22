@@ -3,6 +3,8 @@ require 'rubygems'
 require 'sinatra'
 require 'git_wiki'
 
+use_in_file_templates!
+
 before do
   content_type "text/html", :charset => "utf-8"
 end
