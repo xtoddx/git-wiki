@@ -43,7 +43,14 @@ context 'The GitResource class' do
     assert_nil GitWiki::GitResource.find_gracefully('new-page')
   end
 
-  it 'should find an  page gracefully' do
+  it 'should find an existing page gracefully' do
     assert_kind_of GitWiki::GitResource, GitWiki::GitResource.find_gracefully('01-a-page')
+  end
+
+  it 'should create pages with a sane name' do
+    r = GitWiki::GitResource.find_or_create('newpage')
+    r.content = "NEW CONTENT"
+    r.save
+    assert GitWiki::GitResource.find('newpage')
   end
 end

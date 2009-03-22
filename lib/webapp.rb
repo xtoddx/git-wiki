@@ -82,7 +82,7 @@ __END__
 @@ edit
 - title "Editing #{@page.name}"
 %h1= title
-%form{:method => 'POST', :action => "/#{@page}"}
+%form{:method => 'POST', :action => "/#{@page.url}"}
   %p
     %textarea{:name => 'body', :rows => 30, :style => "width: 100%"}= @page.content
   %p
