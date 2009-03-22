@@ -1,5 +1,14 @@
-#!/usr/bin/env rackup
-require File.dirname(__FILE__) + "/git-wiki"
+require 'rubygems'
+require 'sinatra'
+$: << 'lib'
+require 'git_wiki'
+require 'webapp'
 
-run GitWiki.new(File.expand_path(ARGV[1] || "~/wiki"),
-  ARGV[2] || ".markdown", ARGV[3] || "Home")
+root_dir = File.dirname(__FILE__)
+
+Sinatra::Application.set(
+  :run => false,
+  :environment => ENV['RACK_ENV']
+)
+
+run Sinatra::Application
