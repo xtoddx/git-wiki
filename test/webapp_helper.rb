@@ -11,3 +11,4 @@ $: << 'lib'
 require 'webapp'
 
 GitWiki.repository_url = "test/test_wiki"
+GitWiki.repository_branch = "test_in_progress"

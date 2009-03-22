@@ -4,8 +4,12 @@
 module GitWiki
   class << self
     attr_accessor :repository_url
+    attr_accessor :repository_branch
     def repository_url
       @repository_url || Dir.pwd
+    end
+    def repository_branch
+      @repository_branch || 'master'
     end
   end
 end

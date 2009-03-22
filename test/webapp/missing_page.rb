@@ -1,7 +1,9 @@
-require File.join(File.dirname(__FILE__), 'helper')
+require File.join(File.dirname(__FILE__), '..', 'webapp_helper')
+require File.join(File.dirname(__FILE__), '..', 'test_brancher')
 
 describe 'A Missing Page' do
   include Sinatra::Test
+  include TestBrancher
 
   it 'should redirect to edit' do
     get '/missing'

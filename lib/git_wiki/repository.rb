@@ -15,6 +15,10 @@ module GitWiki
       super(GitWiki.repository_url)
     end
 
+    def tree
+      super(GitWiki.repository_branch)
+    end
+
     ##
     # Save the (possibly new) GitResource in the git repo.
     # Use the given commit message.

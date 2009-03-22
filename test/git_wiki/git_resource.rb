@@ -1,8 +1,12 @@
-require File.join(File.dirname(__FILE__), 'helper')
+require File.join(File.dirname(__FILE__), '..', 'gitwiki_helper')
+require File.join(File.dirname(__FILE__), '..', 'test_brancher')
 
 context 'The GitResource class' do
+  include TestBrancher
+
   setup do
     GitWiki.repository_url = 'test/test_wiki'
+    GitWiki.repository_branch = 'test_in_progress'
   end
 
   it 'should raise MissingResource when it cant find an object' do

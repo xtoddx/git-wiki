@@ -1,6 +1,6 @@
-require File.join(File.dirname(__FILE__), 'helper')
+require File.join(File.dirname(__FILE__), '..', 'gitwiki_helper')
 
-context 'The main GitWiki module' do
+describe 'The main GitWiki module' do
   it 'should provide a default repository_url' do
     assert GitWiki.repository_url
   end
@@ -10,4 +10,12 @@ context 'The main GitWiki module' do
     assert_equal 'foobar', GitWiki.repository_url
   end
 
+  it 'should provide a default repository_branch' do
+    assert GitWiki.repository_branch
+  end
+
+  it 'should allow setting a reposity_branch' do
+    GitWiki.repository_branch = 'foobar'
+    assert_equal 'foobar', GitWiki.repository_branch
+  end
 end
