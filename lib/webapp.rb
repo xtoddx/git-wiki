@@ -74,7 +74,7 @@ __END__
 @@ show
 - title @page.name
 #edit
-  %a{:href => "/#{@page}/edit"} Edit this page
+  %a{:href => "/#{@page.name}/edit"} Edit this page
 %h1= title
 #content
   ~"#{@page.to_html}"
