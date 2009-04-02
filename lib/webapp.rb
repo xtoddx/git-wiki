@@ -3,42 +3,43 @@ require 'rubygems'
 require 'sinatra'
 require 'git_wiki'
 
-use_in_file_templates!
+class Webapp < Sinatra::Base
 
-before do
-  content_type "text/html", :charset => "utf-8"
-end
+  before do
+    content_type "text/html", :charset => "utf-8"
+  end
 
-get "/" do
-  show_page('Homepage')
-end
+  get "/" do
+    show_page('Homepage')
+  end
 
-get "/Homepage" do
-  redirect "/"
-end
+  get "/Homepage" do
+    redirect "/"
+  end
 
-get "/pages" do
-  @pages = GitWiki::Page.find_all
-  haml :list
-end
+  get "/pages" do
+    @pages = GitWiki::Page.find_all
+    haml :list
+  end
 
-get "/:page/edit" do
-  @page = GitWiki::Page.find_or_create(params[:page])
-  haml :edit
-end
+  get "/:page/edit" do
+    @page = GitWiki::Page.find_or_create(params[:page])
+    haml :edit
+  end
 
-get "/:page" do
-  show_page(params[:page])
-end
+  get "/:page" do
+    show_page(params[:page])
+  end
 
-post "/:page" do
-  @page = GitWiki::Page.find_or_create(params[:page])
-  @page.content = params[:body]
-  @page.save
-  haml :show
-end
+  post "/:page" do
+    @page = GitWiki::Page.find_or_create(params[:page])
+    @page.content = params[:body]
+    @page.save
+    haml :show
+  end
 
-private
+  private
+
   def title(title=nil)
     @title = title.to_s unless title.nil?
     @title
@@ -56,6 +57,16 @@ private
       halt
     end
   end
+
+  def lookup_layout engine, options
+    layout = GitWiki::Layout.find("layout.#{engine}")
+    if layout
+      return layout.name, layout.data
+    else
+      return nil, nil
+    end
+  end
+end
 
 __END__
 @@ layout

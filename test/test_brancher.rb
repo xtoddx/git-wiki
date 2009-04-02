@@ -10,10 +10,10 @@ module TestBrancher
   end
 
   def self.branch
-    `cd test/test_wiki && git checkout -b test_in_progress 46d0cfa04c973d23e4dd3da2b4a7fa3e245dd9fd > /dev/null 2>&1`
+    `cd test/test_wiki && git checkout -b test_in_progress f3c843841ed85d65eb4d16acf61b3e5e4b1dfdf7 > /dev/null 2>&1`
   end
 
   def self.unbranch
-    `cd test/test_wiki && git checkout 46d0cfa04c973d23e4dd3da2b4a7fa3e245dd9fd > /dev/null 2>&1 && git branch -D test_in_progress > /dev/null 2>&1`
+    `cd test/test_wiki && git checkout f3c843841ed85d65eb4d16acf61b3e5e4b1dfdf7 > /dev/null 2>&1 && git branch -D test_in_progress > /dev/null 2>&1`
   end
 end

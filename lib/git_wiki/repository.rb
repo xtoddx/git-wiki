@@ -25,8 +25,9 @@ module GitWiki
     #
     def store obj, msg
       Dir.chdir(working_dir) do
-        File.open(obj.blob.name, 'w'){ |f| f.write(obj.content) }
-        add(obj.blob.name)
+        FileUtils.mkdir_p(File.dirname(obj.path))
+        File.open(obj.path, 'w'){ |f| f.write(obj.content) }
+        add(obj.path)
       end
       commit_index(msg)
     end

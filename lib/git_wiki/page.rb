@@ -8,6 +8,7 @@ require 'fileutils'
 
 module GitWiki
   class Page < GitResource
+    set_git_path 'pages'
 
     def to_html
       RDiscount.new(wiki_link(content)).to_html

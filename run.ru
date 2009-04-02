@@ -13,4 +13,4 @@ Sinatra::Application.set(
   :environment => ENV['RACK_ENV']
 )
 
-run Sinatra::Application
+run Webapp

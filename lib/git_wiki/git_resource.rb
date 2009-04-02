@@ -2,7 +2,7 @@ module GitWiki
   ##
   # Every GitResource should respond to a few basic methods to let
   # the repository interface cleanly with it.
-  # * initialize(blob)
+  # * initialize(blob, path)
   # * blob [ probalby just an attr_reader on the initilized object ]
   # * content [ the current content ]
   #
@@ -10,15 +10,16 @@ module GitWiki
 
     class MissingResource < StandardError ; end
 
-    attr_accessor :content
+    attr_accessor :content, :path
     attr_reader :blob
 
     ##
     # Create the object and set the blob and content
     #
-    def initialize blob
+    def initialize blob, path
       @blob = blob
       self.content = blob.data
+      self.path = path
     end
 
     ##
@@ -73,44 +74,47 @@ module GitWiki
       ##
       # Find every entry in the repository and pass it to the initializer
       #
-      def find_all
-        return [] if repository.tree.contents.empty?
-        repository.tree.contents.collect { |blob| new(blob) }
+      def find_all root=repository.tree, path=''
+        # TODO: more work here to use git_path
+        r_find(root, path)
       end
 
       ##
       # Very quickly let us know if a resource exists
       #
-      def exists? name
-        find_blob(name)
+      def exists? path
+        find_blob(full_path(path))
       end
 
       ##
       # Given a name, find the resource
       #
-      def find(name)
-        page_blob = find_blob(name)
+      def find(path)
+        path = full_path(path)
+        page_blob = find_blob(path)
         raise MissingResource unless page_blob
-        new(page_blob)
+        new(page_blob, path)
       end
 
       ##
       # Find by name, or return a default
       #
-      def find_or_create(name)
-        if page_blob = find_blob(name)
-          new(page_blob)
+      def find_or_create(path)
+        path = full_path(path)
+        if page_blob = find_blob(path)
+          new(page_blob, path)
         else
-          new(create_blob_for(name))
+          new(create_blob_for(path), path)
         end
       end
 
       ##
       # Find without raising an error
       #
-      def find_gracefully name
-        if blob = find_blob(name)
-          new(blob)
+      def find_gracefully path
+        path = full_path(path)
+        if blob = find_blob(path)
+          new(blob, path)
         else
           nil
         end
@@ -121,15 +125,32 @@ module GitWiki
         @repo ||= GitWiki::Repository.instance
       end
 
-      def find_blob(name)
-        repository.tree/name
+      def find_blob(path)
+        repository.tree/path
       end
 
-      def create_blob_for(name)
+      def create_blob_for(path)
         Grit::Blob.create(repository, {
-          :name => name,
+          :name => path,
           :data => ""
         })
+      end
+
+      def r_find tree_or_blob, path
+        if tree_or_blob.is_a?(Grit::Blob)
+          [new(tree_or_blob, path)]
+        else
+          tree_or_blob.contents.inject([]){|m,x| m + r_find(x, File.join(path, x.name))}
+        end
+      end
+
+      # so subclasses don't have to overwrite finders
+      def set_git_path basedir
+        @git_path = basedir
+      end
+
+      def full_path path
+        @git_path ? File.join(@git_path, path) : path
       end
     end
 
