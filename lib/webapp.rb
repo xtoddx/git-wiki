@@ -59,9 +59,9 @@ class Webapp < Sinatra::Base
   end
 
   def lookup_layout engine, options
-    layout = GitWiki::Layout.find("layout.#{engine}")
+    layout = GitWiki::Layout.find_gracefully("layout.#{engine}")
     if layout
-      return layout.name, layout.data
+      return layout.name, layout.content
     else
       return nil, nil
     end
