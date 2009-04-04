@@ -53,8 +53,16 @@ class Webapp < Sinatra::Base
     if @page = GitWiki::Page.find_gracefully(name)
       haml :show
     else
+      page_not_found(name)
+    end
+  end
+
+  def page_not_found name
+    if request.accept.include?('text/html')
       redirect "/#{name}/edit"
       halt
+    else
+      halt 404, 'not found'
     end
   end
 
