@@ -58,7 +58,7 @@ class Webapp < Sinatra::Base
   end
 
   def page_not_found name
-    if request.accept.include?('text/html')
+    if request.accept.empty? or request.accept.include?('text/html')
       redirect "/#{name}/edit"
       halt
     else
@@ -75,46 +75,3 @@ class Webapp < Sinatra::Base
     end
   end
 end
-
-__END__
-@@ layout
-!!!
-%html
-  %head
-    %title= title
-  %body
-    %ul
-      %li
-        %a{ :href => "/" } Home
-      %li
-        %a{ :href => "/pages" } All pages
-    #content= yield
-
-@@ show
-- title @page.name
-#edit
-  %a{:href => "/#{@page.name}/edit"} Edit this page
-%h1= title
-#content
-  ~"#{@page.to_html}"
-
-@@ edit
-- title "Editing #{@page.name}"
-%h1= title
-%form{:method => 'POST', :action => "/#{@page.url}"}
-  %p
-    %textarea{:name => 'body', :rows => 30, :style => "width: 100%"}= @page.content
-  %p
-    %input.submit{:type => :submit, :value => "Save as the newest version"}
-    or
-    %a.cancel{:href=>"/#{@page}"} cancel
-
-@@ list
-- title "Listing pages"
-%h1 All pages
-- if @pages.empty?
-  %p No pages found.
-- else
-  %ul#list
-    - @pages.each do |page|
-      %li= list_item(page)

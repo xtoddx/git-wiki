@@ -4,6 +4,7 @@ require File.join(File.dirname(__FILE__), '..', 'test_brancher')
 describe 'The homepage' do
   include Sinatra::Test
   include TestBrancher
+  include WebappHelper
 
   it 'should be shown from slash' do
     get '/'

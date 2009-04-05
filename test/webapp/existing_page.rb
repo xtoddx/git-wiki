@@ -4,6 +4,7 @@ require File.join(File.dirname(__FILE__), '..', 'test_brancher')
 describe 'An Existing Page' do
   include Sinatra::Test
   include TestBrancher
+  include WebappHelper
 
   it 'should be viewable' do
     get '/01-a-page'

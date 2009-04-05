@@ -25,7 +25,8 @@ module GitWiki
     #
     def store obj, msg
       Dir.chdir(working_dir) do
-        FileUtils.mkdir_p(File.dirname(obj.path))
+        dirname = File.dirname(obj.path)
+        FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
         File.open(obj.path, 'w'){ |f| f.write(obj.content) }
         add(obj.path)
       end
