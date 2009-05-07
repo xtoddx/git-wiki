@@ -12,12 +12,12 @@ describe 'An Existing Page' do
   end
 
   it 'should be editable' do
-    get '/01-a-page/edit'
+    get '/pages/01-a-page'
     assert_equal 200, @response.status
   end
 
   it 'should process an edit' do
-    post '/01-a-page', :body => 'New Page'
+    post '/pages/01-a-page', :body => 'New Page'
     assert_match 'New Page', @response.body
   end
 

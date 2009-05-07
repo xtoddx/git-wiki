@@ -1,9 +1,9 @@
 - title "Editing #{@page.name}"
 %h1= title
-%form{:method => 'POST', :action => "/#{@page.url}"}
+%form{:method => 'POST', :action => "/#{@page.name}"}
   %p
     %textarea{:name => 'body', :rows => 30, :style => "width: 100%"}= @page.content
   %p
     %input.submit{:type => :submit, :value => "Save as the newest version"}
     or
-    %a.cancel{:href=>"/#{@page.url}"} cancel
+    %a.cancel{:href=>"/#{@page.name}"} cancel

@@ -12,12 +12,12 @@ describe 'A Missing Page' do
   end
 
   it 'should be editable' do
-    get '/missing/edit'
+    get '/pages/missing'
     assert_equal 200, @response.status
   end
 
   it 'should be creatable' do
-    post '/missing', {:body => 'This is a cool new body'}
+    post '/pages/missing', {:body => 'This is a cool new body'}
     assert_match 'This is a cool new body', @response.body
 
     pg = GitWiki::Page.find('missing')

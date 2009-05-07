@@ -22,8 +22,18 @@ class Webapp < Sinatra::Base
     haml :list
   end
 
-  get "/:page/edit" do
-    @page = GitWiki::Page.find_or_create(params[:page])
+  get "/views" do
+    @pages = GitWiki::View.find_all
+    haml :list
+  end
+
+  get "/layouts" do
+    @pages = GitWiki::Layout.find_all
+    haml :list
+  end
+
+  get "/:resource_type/:page" do
+    @page = resource_class(params[:resource_type]).find_or_create(params[:page])
     haml :edit
   end
 
@@ -31,11 +41,15 @@ class Webapp < Sinatra::Base
     show_page(params[:page])
   end
 
-  post "/:page" do
-    @page = GitWiki::Page.find_or_create(params[:page])
+  post "/:resource_type/:page" do
+    @page = resource_class(params[:resource_type]).find_or_create(params[:page])
     @page.content = params[:body]
     @page.save
-    haml :show
+    if @page.respond_to?(:to_html)
+      haml :show
+    else
+      redirect "/#{params[:resource_type]}"
+    end
   end
 
   private
@@ -46,7 +60,11 @@ class Webapp < Sinatra::Base
   end
 
   def list_item(page)
-    %Q{<a class="page_name" href="/#{page.url}">#{page.name}</a>}
+    if page.is_a? GitWiki::Page
+      %Q{<a class="page_name" href="/#{page.url}">#{page.name}</a>}
+    else
+      %Q{<a class="page_name" href="/#{page.class.name.split('::').last.downcase}s/#{page.name}">#{page.name}</a>}
+    end
   end
 
   def show_page name
@@ -87,5 +105,9 @@ class Webapp < Sinatra::Base
     else
       super(engine, template, options)
     end
+  end
+
+  def resource_class resource_type
+    GitWiki.const_get(resource_type.gsub(/s$/, '').capitalize)
   end
 end
