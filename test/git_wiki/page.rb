@@ -53,4 +53,9 @@ context 'The Page class' do
     r.save
     assert GitWiki::Page.find('newpage')
   end
+
+  it 'should not find resources outside of the /pages path inside repo' do
+    pp = GitWiki::Page.find_all
+    assert pp.all?{|x| x.path.match(/^pages\//)}
+  end
 end
