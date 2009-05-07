@@ -74,4 +74,18 @@ class Webapp < Sinatra::Base
       return nil, nil
     end
   end
+
+  def lookup_template engine, template, options={}
+    if template.is_a?(Symbol) and cached=self.class.templates[template]
+      super(engine, cached, options)
+    elsif template.is_a?(Symbol)
+      if rv = GitWiki::View.find_gracefully("#{template}.#{engine}")
+        rv.content
+      else
+        super(engine, template, options)
+      end
+    else
+      super(engine, template, options)
+    end
+  end
 end

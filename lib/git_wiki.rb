@@ -18,4 +18,5 @@ require 'git_wiki/repository'
 require 'git_wiki/git_resource'
 require 'git_wiki/page'
 require 'git_wiki/layout'
+require 'git_wiki/view'
 
