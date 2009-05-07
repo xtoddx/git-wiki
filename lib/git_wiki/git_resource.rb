@@ -74,8 +74,13 @@ module GitWiki
       ##
       # Find every entry in the repository and pass it to the initializer
       #
-      def find_all root=repository.tree, path=''
-        # TODO: more work here to use git_path
+      def find_all root=nil, path=''
+        if root.nil?
+          root = repository.tree
+          if @git_path
+            root = root/@git_path
+          end
+        end
         r_find(root, path)
       end
 
@@ -138,7 +143,7 @@ module GitWiki
 
       def r_find tree_or_blob, path
         if tree_or_blob.is_a?(Grit::Blob)
-          [new(tree_or_blob, path)]
+          [new(tree_or_blob, full_path(path))]
         else
           tree_or_blob.contents.inject([]){|m,x| m + r_find(x, File.join(path, x.name))}
         end
