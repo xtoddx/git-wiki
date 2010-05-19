@@ -1,6 +1,6 @@
 - title "Editing #{@page.name}"
 %h1= title
-%form{:method => 'POST', :action => "/#{@page.name}"}
+%form{:method => 'POST', :action => "/#{@page.class.name.split('::').last.downcase}s/#{@page.name.split('/').last}"}
   %p
     %textarea{:name => 'body', :rows => 30, :style => "width: 100%"}= @page.content
   %p

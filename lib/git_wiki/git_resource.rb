@@ -60,6 +60,7 @@ module GitWiki
     end
 
     private
+
     def repository
       self.class.send(:repository)
     end
@@ -80,6 +81,9 @@ module GitWiki
           if @git_path
             root = root/@git_path
           end
+        end
+        if root.nil?
+          return []
         end
         r_find(root, path)
       end

@@ -10,6 +10,9 @@ module TestBrancher
   end
 
   def self.branch
+    unless File.directory?('test/test_wiki/.git')
+      `git clone . test/test_wiki`
+    end
     `cd test/test_wiki && git checkout -b test_in_progress f3c843841ed85d65eb4d16acf61b3e5e4b1dfdf7 > /dev/null 2>&1`
   end
 

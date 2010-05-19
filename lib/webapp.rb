@@ -2,6 +2,7 @@ $: << 'lib'
 require 'rubygems'
 require 'sinatra'
 require 'git_wiki'
+require 'haml'
 
 class Webapp < Sinatra::Base
 
@@ -32,13 +33,23 @@ class Webapp < Sinatra::Base
     haml :list
   end
 
-  get "/:resource_type/:page" do
-    @page = resource_class(params[:resource_type]).find_or_create(params[:page])
+  get "/:page" do
+    show_page(params[:page])
+  end
+
+  get "/:page/edit" do
+    @page = GitWiki::Page.find_or_create(params[:page])
     haml :edit
   end
 
-  get "/:page" do
-    show_page(params[:page])
+  get "/:resource_type/:page" do
+    @page = resource_class(params[:resource_type]).find_or_create(params[:page])
+    haml :show
+  end
+
+  get "/:resource_type/:page/edit" do
+    @page = resource_class(params[:resource_type]).find_or_create(params[:page])
+    haml :edit
   end
 
   post "/:resource_type/:page" do
@@ -76,7 +87,7 @@ class Webapp < Sinatra::Base
   end
 
   def page_not_found name
-    if request.accept.empty? or request.accept.include?('text/html')
+    if request.accept.empty? or request.accept.grep(/text\/html/)
       redirect "/#{name}/edit"
       halt
     else
@@ -84,26 +95,12 @@ class Webapp < Sinatra::Base
     end
   end
 
-  def lookup_layout engine, options
-    layout = GitWiki::Layout.find_gracefully("layout.#{engine}")
-    if layout
-      return layout.name, layout.content
+  def compile_template engine, data, options, views
+    gf = GitWiki::View.find_gracefully("#{data}.#{engine}")
+    if gf
+      ::Haml::Engine.new(gf.content)
     else
-      return nil, nil
-    end
-  end
-
-  def lookup_template engine, template, options={}
-    if template.is_a?(Symbol) and cached=self.class.templates[template]
-      super(engine, cached, options)
-    elsif template.is_a?(Symbol)
-      if rv = GitWiki::View.find_gracefully("#{template}.#{engine}")
-        rv.content
-      else
-        super(engine, template, options)
-      end
-    else
-      super(engine, template, options)
+      super
     end
   end
 
